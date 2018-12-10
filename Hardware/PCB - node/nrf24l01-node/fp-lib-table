@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name athir)(type KiCad)(uri "C:/Users/Andreas/Dropbox/Projects/RF Receiver - AD9954 + Tayloe/Hardware/libs/athir.pretty")(options "")(descr ""))
+)

@@ -222,7 +222,7 @@
   )
 
   (module Battery:BatteryHolder_Keystone_3009_1x2450 (layer B.Cu) (tedit 58972349) (tstamp 5C1767BA)
-    (at 74.676 141.224)
+    (at 74.676 144.018)
     (descr http://www.keyelco.com/product-pdf.cfm?p=787)
     (tags "Keystone type 3009 coin cell retainer")
     (path /5C06E6B3)

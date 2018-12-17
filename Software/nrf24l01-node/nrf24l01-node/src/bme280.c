@@ -6,6 +6,9 @@
  */ 
 
 #include "bme280.h"
+#include "math.h"
+
+
 
 //enum status_code bme280_spi_send(uint8_t *data)
 void bme280_spi_write(uint8_t *data,uint16_t length)
@@ -93,34 +96,42 @@ void bme280_calc_cal(void)
 	H6 = cal_data[32];
 }
 
-double bme280_calc_temp(int32_t read_temp)
+int32_t bme280_calc_temp(int32_t read_temp)
 {
-	double var1, var2, T;
-	var1 = (((double)read_temp)/16384.0 - ((double)T1)/1024.0) * ((double)T2);
-	var2 = ((((double)read_temp)/131072.0 - ((double)T1)/8192.0) * (((double)read_temp)/131072.0 - ((double) T1)/8192.0)) * ((double)T3);
-	t_fine = (int32_t)(var1 + var2);
-	T = (var1 + var2) / 5120.0;
+	int32_t var1, var2, T;
+	var1 = ((((read_temp>>3) - ((int32_t)T1<<1))) * ((int32_t)T2)) >> 11;
+	var2 = (((((read_temp>>4) - ((int32_t)T1)) * ((read_temp>>4) - ((int32_t)T1))) >> 12) *	((int32_t)T3)) >> 14;
+	t_fine = var1 + var2;
+	T = (t_fine * 5 + 128) >> 8;
 	return T;
 }
 
-double bme280_calc_pres(int32_t read_pres)
+int32_t bme280_calc_pres(int32_t read_pres)
 {
-	double var1, var2, p;
-	var1 = ((double)t_fine/2.0) - 64000.0;
-	var2 = var1 * var1 * ((double)P6) / 32768.0;
-	var2 = var2 + var1 * ((double)P5) * 2.0;
-	var2 = (var2/4.0)+(((double)P4) * 65536.0);
-	var1 = (((double)P3) * var1 * var1 / 524288.0 + ((double)P2) * var1) / 524288.0;
-	var1 = (1.0 + var1 / 32768.0)*((double)P1);
-	if (var1 == 0.0)
+	int32_t var1, var2;
+	uint32_t p;
+	var1 = (((int32_t)t_fine)>>1) - (int32_t)64000;
+	var2 = (((var1>>2) * (var1>>2)) >> 11 ) * ((int32_t)P6);
+	var2 = var2 + ((var1*((int32_t)P5))<<1);
+	var2 = (var2>>2)+(((int32_t)P4)<<16);
+	var1 = (((P3 * (((var1>>2) * (var1>>2)) >> 13 )) >> 3) + ((((int32_t)P2) * var1)>>1))>>18;
+	var1 =((((32768+var1))*((int32_t)P1))>>15);
+	if (var1 == 0)
 	{
 		return 0; // avoid exception caused by division by zero
 	}
-	p = 1048576.0 - (double)read_pres;
-	p = (p - (var2 / 4096.0)) * 6250.0 / var1;
-	var1 = ((double)P9) * p * p / 2147483648.0;
-	var2 = p * ((double)P8) / 32768.0;
-	p = p + (var1 + var2 + ((double)P7)) / 16.0;
+	p = (((uint32_t)(((int32_t)1048576)-read_pres)-(var2>>12)))*3125;
+	if (p < 0x80000000)
+	{
+		p = (p << 1) / ((uint32_t)var1);
+	}
+	else
+	{
+		p = (p / (uint32_t)var1) * 2;
+	}
+	var1 = (((int32_t)P9) * ((int32_t)(((p>>3) * (p>>3))>>13)))>>12;
+	var2 = (((int32_t)(p>>2)) * ((int32_t)P8))>>13;
+	p = (uint32_t)((int32_t)p + ((var1 + var2 + P7) >> 4));
 	return p;
 }
 
@@ -135,4 +146,69 @@ double bme280_calc_hum(int32_t read_hum)
 	else if (var_H < 0.0)
 		var_H = 0.0;
 	return var_H;
+}
+
+double bme280_calc_dew(int32_t temp, double hum)
+{
+	double celsius = (double)temp/100;
+	double RATIO = 373.15 / (273.15 + celsius);
+	double RHS = -7.90298 * (RATIO - 1);
+	RHS += 5.02808 * log10(RATIO);
+	RHS += -1.3816e-7 * (pow(10, (11.344 * (1 - 1/RATIO ))) - 1) ;
+	RHS += 8.1328e-3 * (pow(10, (-3.49149 * (RATIO - 1))) - 1) ;
+	RHS += log10(1013.246);
+	// factor -3 is to adjust units - Vapor Pressure SVP * humidity
+	double VP = pow(10, RHS - 3) * hum;
+	// (2) DEWPOINT = F(Vapor Pressure)
+	double T = log(VP/0.61078);   // temp var
+	return (241.88 * T) / (17.558 - T);
+}
+
+void bme280_get_all_calced(struct bme280_data *bme280_data_object)
+{
+	uint8_t temps[3];
+	uint8_t pres[3];
+	uint8_t hum[2];
+	
+	bme280_force_update();
+		
+	bme280_read_temp(&temps);
+	bme280_read_pres(&pres);
+	bme280_read_hum(&hum);
+	
+	bme280_data_object->temperature = bme280_calc_temp((int32_t)(temps[0]<<12)+(temps[1] << 4)+(temps[2] >> 4));
+	bme280_data_object->pressure = bme280_calc_pres((int32_t)(pres[0]<<12)+(pres[1] << 4)+(pres[2] >> 4))/100;
+	bme280_data_object->humidity = bme280_calc_hum((int32_t)(hum[0]<<8)+hum[1]);
+	bme280_data_object->dew_point = bme280_calc_dew(bme280_data_object->temperature, bme280_data_object->humidity);
+}
+
+void bme280_force_update(void)
+{
+	uint8_t data[2];
+	data[0] = 0xF4;
+	data[1] = 0x26;
+	bme280_spi_write(&data,2);
+	delay_ms(15);
+}
+
+void bme280_init(void)
+{
+	bme280_get_cal_data();
+	bme280_calc_cal();
+	bme280_spi_read(&device_id,1,0xD0);
+	uint8_t data[2];
+	
+	uint8_t temp =  0;
+	bme280_spi_read(&temp,1,0xF2);
+	
+	data[0] = 0xF2;
+	data[1] = 0x01;
+	bme280_spi_write(&data,2);
+	data[0] = 0xF4;
+	data[1] = 0x26;
+	bme280_spi_write(&data,2);
+	
+	data[0] = 0xF5;
+	data[1] = 0xC0;
+	bme280_spi_write(&data,2);
 }

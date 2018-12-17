@@ -136,7 +136,8 @@ src/bme280.d src/bme280.o: ../src/bme280.c ../src/bme280.h ../src/asf.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\xlocale.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\string.h \
  ../src/config/conf_spi.h ../src/ASF/sam0/drivers/sercom/usart/usart.h \
- ../src/spi_master.h
+ ../src/spi_master.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\math.h
 
 ../src/bme280.h:
 
@@ -425,3 +426,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 ../src/ASF/sam0/drivers/sercom/usart/usart.h:
 
 ../src/spi_master.h:
+
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\math.h:

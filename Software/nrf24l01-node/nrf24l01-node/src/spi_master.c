@@ -18,8 +18,8 @@ void spi_master_init(void)
 	spi_attach_slave(&bme280_slave_instance, &bme280_slave_config);
 	
 	spi_slave_inst_get_config_defaults(&nrf24l01_slave_config);
-	nrf24l01_slave_config.ss_pin = NRF24L01_CE;
-	spi_attach_slave(&nrf14l01_slave_instance, &nrf24l01_slave_config);
+	nrf24l01_slave_config.ss_pin = NRF24L01_SS;
+	spi_attach_slave(&nrf24l01_slave_instance, &nrf24l01_slave_config);
 	
 	
 	/* Configure, initialize and enable SERCOM SPI module */
@@ -34,7 +34,7 @@ void spi_master_init(void)
 	/* Configure pad 3 for SCK */
 	config_spi.pinmux_pad3 = SPI_MISO;
 	config_spi.receiver_enable = true;
-	spi_init(&spi_master_instance, SPI_MODULE, &config_spi);
+	spi_init(&spi_master_instance, SPI_MODULE, &config_spi); 
 	spi_enable(&spi_master_instance);
 }
 

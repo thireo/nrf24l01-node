@@ -12,6 +12,8 @@ src\ASF\sam0\drivers\sercom\sercom.c
 
 src\bme280.c
 
+src\nrf24l01.c
+
 src\spi_master.c
 
 src\ASF\sam0\drivers\sercom\usart\usart.c

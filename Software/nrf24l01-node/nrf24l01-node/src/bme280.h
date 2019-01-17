@@ -28,8 +28,8 @@ struct bme280_data
 {
 	int32_t temperature;
 	int32_t pressure;
-	double humidity;
-	double dew_point;
+	float humidity;
+	float dew_point;
 };
 
 void bme280_spi_write(uint8_t *data,uint16_t length);
@@ -50,5 +50,7 @@ void bme280_get_all_calced(struct bme280_data *bme280_data_object);
 
 void bme280_force_update(void);
 void bme280_init(void);
+
+void bme280_data_compress(struct bme280_data *bme280_data_object, uint8_t *data_array);
 
 #endif /* BME280_H_ */

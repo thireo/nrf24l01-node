@@ -1,5 +1,6 @@
-src/main.d src/main.o: ../src/main.c ../src/asf.h \
- ../src/ASF/sam0/drivers/adc/adc.h ../src/ASF/sam0/utils/compiler.h \
+src/nrf24l01.d src/nrf24l01.o: ../src/nrf24l01.c ../src/nrf24l01.h \
+ ../src/asf.h ../src/ASF/sam0/drivers/adc/adc.h \
+ ../src/ASF/sam0/utils/compiler.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\6.3.1\include\stddef.h \
  ../src/ASF/common/utils/parts.h ../src/ASF/sam0/utils/status_codes.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\6.3.1\include\stdint.h \
@@ -136,7 +137,9 @@ src/main.d src/main.o: ../src/main.c ../src/asf.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\xlocale.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\string.h \
  ../src/config/conf_spi.h ../src/ASF/sam0/drivers/sercom/usart/usart.h \
- ../src/bme280.h ../src/asf.h ../src/spi_master.h ../src/nrf24l01.h
+ ../src/spi_master.h
+
+../src/nrf24l01.h:
 
 ../src/asf.h:
 
@@ -422,10 +425,4 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 
 ../src/ASF/sam0/drivers/sercom/usart/usart.h:
 
-../src/bme280.h:
-
-../src/asf.h:
-
 ../src/spi_master.h:
-
-../src/nrf24l01.h:

@@ -16,12 +16,12 @@
 #define SPI_MISO PINMUX_PA11C_SERCOM0_PAD3
 #define SPI_MUX_SETTING SPI_SIGNAL_MUX_SETTING_D
 
-#define BME280_CE PIN_PA10
-#define NRF24L01_CE PIN_PA12
+#define BME280_CE PIN_PA16
+#define NRF24L01_SS PIN_PA12
 
 struct spi_module spi_master_instance;
 struct spi_slave_inst bme280_slave_instance;
-struct spi_slave_inst nrf14l01_slave_instance;
+struct spi_slave_inst nrf24l01_slave_instance;
 
 
 void spi_master_init(void);

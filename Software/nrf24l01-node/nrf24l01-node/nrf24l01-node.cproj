@@ -677,6 +677,12 @@
     <Compile Include="src\bme280.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\nrf24l01.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\nrf24l01.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\spi_master.c">
       <SubType>compile</SubType>
     </Compile>

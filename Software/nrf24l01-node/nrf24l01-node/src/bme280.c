@@ -178,8 +178,8 @@ void bme280_get_all_calced(struct bme280_data *bme280_data_object)
 	
 	bme280_data_object->temperature = bme280_calc_temp((int32_t)(temps[0]<<12)+(temps[1] << 4)+(temps[2] >> 4));
 	bme280_data_object->pressure = bme280_calc_pres((int32_t)(pres[0]<<12)+(pres[1] << 4)+(pres[2] >> 4))/100;
-	bme280_data_object->humidity = bme280_calc_hum((int32_t)(hum[0]<<8)+hum[1]);
-	bme280_data_object->dew_point = bme280_calc_dew(bme280_data_object->temperature, bme280_data_object->humidity);
+	bme280_data_object->humidity = (float)bme280_calc_hum((hum[0]<<8)+hum[1]);
+	bme280_data_object->dew_point = (float)bme280_calc_dew(bme280_data_object->temperature, bme280_data_object->humidity);
 }
 
 void bme280_force_update(void)
@@ -211,4 +211,60 @@ void bme280_init(void)
 	data[0] = 0xF5;
 	data[1] = 0xC0;
 	bme280_spi_write(&data,2);
+}
+
+union {
+	float from;
+	uint8_t bytes[4];
+	}tobytearray;
+	
+typedef union {
+	struct {
+		int32_t temperature;
+		int32_t pressure;
+		float humidity;
+		float dew_point;
+		}hestestruct;
+		uint8_t bytes[16];
+	}testheste;
+
+void bme280_data_compress(struct bme280_data *bme280_data_object, uint8_t *data_array)
+{
+	testheste testhest;
+	testhest.hestestruct.temperature = bme280_data_object->temperature;
+	testhest.hestestruct.pressure = bme280_data_object->pressure;
+	testhest.hestestruct.dew_point = bme280_data_object->dew_point;
+	testhest.hestestruct.humidity = bme280_data_object->humidity;
+	
+	for (int i=0;i<16;i++)
+	{
+		data_array[i] = testhest.bytes[i];
+	}
+	
+	
+	
+	/*
+	data_array[0] = (bme280_data_object->temperature & 0xFF);
+	data_array[1] = ((bme280_data_object->temperature >> 8) & 0xFF);
+	data_array[2] = ((bme280_data_object->temperature >> 16) & 0xFF);
+	data_array[3] = ((bme280_data_object->temperature >> 24) & 0xFF);
+	
+	data_array[4] = (bme280_data_object->pressure & 0xFF);
+	data_array[5] = ((bme280_data_object->pressure >> 8) & 0xFF);
+	data_array[6] = ((bme280_data_object->pressure >> 16) & 0xFF);
+	data_array[7] = ((bme280_data_object->pressure >> 24) & 0xFF);
+	
+	tobytearray.from = (float) bme280_data_object->dew_point;
+		
+	data_array[8] = tobytearray.bytes[0];
+	data_array[9] = tobytearray.bytes[1];
+	data_array[10] = tobytearray.bytes[2];
+	data_array[11] = tobytearray.bytes[3];
+	
+	tobytearray.from = (float) bme280_data_object->humidity;
+	
+	data_array[12] = tobytearray.bytes[0];
+	data_array[13] = tobytearray.bytes[1];
+	data_array[14] = tobytearray.bytes[2];
+	data_array[15] = tobytearray.bytes[3];*/
 }

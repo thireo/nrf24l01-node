@@ -38,7 +38,7 @@ F 3 "" H 6400 5325 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	6400 5325 6400 5250
-Text Notes 6400 4325 0    50   ~ 0
+Text Notes 6400 4200 0    50   ~ 0
 SDO: Slave Address LSB
 Text HLabel 6775 4500 2    50   Input ~ 0
 BME280_SCK

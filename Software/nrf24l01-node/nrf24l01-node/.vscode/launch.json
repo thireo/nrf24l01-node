@@ -1,0 +1,40 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Cortex Debug",
+            "cwd": "${workspaceRoot}",
+            "executable": "./bin/executable.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "jlink"
+        },
+        {
+            "request": "launch",
+            "type": "cortex-debug",
+            "name": "Debug SAMD21G18",
+            "cwd": "${workspaceRoot}",
+            "executable": "./Debug/nrf24l01-node.elf",
+            "servertype": "jlink",
+            "interface": "swd",
+            //"ipAddress": "127.0.0.1",
+            //"serialNumber": "28007034",
+            "device": "ATSAMD21G18",
+            "runToMain": true,
+            //"armToolchainPath": "C:/Program Files (x86)/GNU Tools ARM Embedded/8 2018-q4-major/bin",
+            "armToolchainPath": "C:/Program Files (x86)/Atmel/Studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/",
+            //"debugServer": 2331,//4711
+            "preRestartCommands": [
+              //"file ./bootloader.elf",
+              //"load",
+              //"add-symbol-file ./build/release/release.elf 0x08002030",
+              "enable breakpoint",
+              //"monitor reset"
+            ],
+            //"svdFile": "C:\\Program Files (x86)\\Atmel\\Studio\\7.0\\packs\\atmel\\SAMD21_DFP\\1.3.331\\samd21a\\svd\\ATSAMD21G18A.svd"
+          }
+    ]
+}

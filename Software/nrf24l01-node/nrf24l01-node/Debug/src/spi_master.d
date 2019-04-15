@@ -19,7 +19,7 @@ src/spi_master.d src/spi_master.o: ../src/spi_master.c \
  ../src/ASF/sam0/utils/header_files/io.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\6.3.1\include\stdbool.h \
  ../src/ASF/sam0/utils/cmsis/samd21/include/samd21.h \
- ../src/ASF/sam0/utils/cmsis/samd21/include/samd21j18a.h \
+ ../src/ASF/sam0/utils/cmsis/samd21/include/samd21g18a.h \
  ../src/ASF/thirdparty/CMSIS/Include/core_cm0plus.h \
  ../src/ASF/thirdparty/CMSIS/Include/core_cmInstr.h \
  ../src/ASF/thirdparty/CMSIS/Include/core_cmFunc.h \
@@ -74,14 +74,12 @@ src/spi_master.d src/spi_master.o: ../src/spi_master.c \
  ../src/ASF/sam0/utils/cmsis/samd21/include/instance/tc3.h \
  ../src/ASF/sam0/utils/cmsis/samd21/include/instance/tc4.h \
  ../src/ASF/sam0/utils/cmsis/samd21/include/instance/tc5.h \
- ../src/ASF/sam0/utils/cmsis/samd21/include/instance/tc6.h \
- ../src/ASF/sam0/utils/cmsis/samd21/include/instance/tc7.h \
  ../src/ASF/sam0/utils/cmsis/samd21/include/instance/tcc0.h \
  ../src/ASF/sam0/utils/cmsis/samd21/include/instance/tcc1.h \
  ../src/ASF/sam0/utils/cmsis/samd21/include/instance/tcc2.h \
  ../src/ASF/sam0/utils/cmsis/samd21/include/instance/usb.h \
  ../src/ASF/sam0/utils/cmsis/samd21/include/instance/wdt.h \
- ../src/ASF/sam0/utils/cmsis/samd21/include/pio/samd21j18a.h \
+ ../src/ASF/sam0/utils/cmsis/samd21/include/pio/samd21g18a.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\stdio.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\_ansi.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\newlib.h \
@@ -136,7 +134,11 @@ src/spi_master.d src/spi_master.o: ../src/spi_master.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\string.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\xlocale.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\string.h \
- ../src/config/conf_spi.h ../src/ASF/sam0/drivers/sercom/usart/usart.h
+ ../src/config/conf_spi.h ../src/ASF/sam0/drivers/sercom/usart/usart.h \
+ ../src/ASF/common/services/sleepmgr/samd/sleepmgr.h \
+ ../src/config/conf_sleepmgr.h \
+ ../src/ASF/common/services/sleepmgr/sleepmgr.h \
+ ../src/ASF/common/services/sleepmgr/samd/sleepmgr.h
 
 ../src/spi_master.h:
 
@@ -184,7 +186,7 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gc
 
 ../src/ASF/sam0/utils/cmsis/samd21/include/samd21.h:
 
-../src/ASF/sam0/utils/cmsis/samd21/include/samd21j18a.h:
+../src/ASF/sam0/utils/cmsis/samd21/include/samd21g18a.h:
 
 ../src/ASF/thirdparty/CMSIS/Include/core_cm0plus.h:
 
@@ -294,10 +296,6 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gc
 
 ../src/ASF/sam0/utils/cmsis/samd21/include/instance/tc5.h:
 
-../src/ASF/sam0/utils/cmsis/samd21/include/instance/tc6.h:
-
-../src/ASF/sam0/utils/cmsis/samd21/include/instance/tc7.h:
-
 ../src/ASF/sam0/utils/cmsis/samd21/include/instance/tcc0.h:
 
 ../src/ASF/sam0/utils/cmsis/samd21/include/instance/tcc1.h:
@@ -308,7 +306,7 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gc
 
 ../src/ASF/sam0/utils/cmsis/samd21/include/instance/wdt.h:
 
-../src/ASF/sam0/utils/cmsis/samd21/include/pio/samd21j18a.h:
+../src/ASF/sam0/utils/cmsis/samd21/include/pio/samd21g18a.h:
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\stdio.h:
 
@@ -423,3 +421,11 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 ../src/config/conf_spi.h:
 
 ../src/ASF/sam0/drivers/sercom/usart/usart.h:
+
+../src/ASF/common/services/sleepmgr/samd/sleepmgr.h:
+
+../src/config/conf_sleepmgr.h:
+
+../src/ASF/common/services/sleepmgr/sleepmgr.h:
+
+../src/ASF/common/services/sleepmgr/samd/sleepmgr.h:

@@ -112,4 +112,8 @@
 // From module: SYSTEM - Reset Management for SAM D20/D21/R21/D09/D10/D11/DA/HA
 #include <reset.h>
 
+// From module: Sleep manager - SAMD implementation
+#include <samd/sleepmgr.h>
+#include <sleepmgr.h>
+
 #endif // ASF_H

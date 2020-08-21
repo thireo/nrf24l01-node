@@ -11,8 +11,11 @@
 
 #include "asf.h"
 #include "spi_master.h"
+#include "main.h"
+#include "uart.h"
 
 
+#define NRF24L01_IRQ PIN_PA13
 #define NRF24L01_CS PIN_PA12
 #define NRF24L01_CE PIN_PA10
 
@@ -60,6 +63,10 @@ uint32_t NRF_Write(uint32_t Command, uint32_t Length, char *Input);
 uint32_t NRF_Write_2(uint32_t Command, char Input);
 uint32_t NRF_Write_1(uint32_t Command);
 
+nrf_enable_vcc(void);
+nrf_disable_vcc(void);
+
+void nrf24l01_status(void);
 
 #define NRF_FAILURE 0
 #define NRF_SUCCES 1

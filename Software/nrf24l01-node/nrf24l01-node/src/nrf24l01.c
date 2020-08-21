@@ -9,9 +9,9 @@
 
 uint32_t nrf24l01_spi_write(uint8_t *data,uint16_t length)
 {
-	//spi_select_slave(&spi_master_instance,&nrf24l01_slave_instance,true);
+	spi_select_slave(&spi_master_instance,&nrf24l01_slave_instance,true);
 	uint32_t status_code = (uint32_t) spi_write_buffer_wait(&spi_master_instance,data,length);
-	//spi_select_slave(&spi_master_instance,&nrf24l01_slave_instance,false);
+	spi_select_slave(&spi_master_instance,&nrf24l01_slave_instance,false);
 	return status_code;
 }
 
@@ -35,39 +35,112 @@ void nrf24l01_cmd(uint32_t cmd, uint8_t data_input)
 
 void nrf24l01_spi_read(uint8_t *data,uint16_t length,uint16_t reg)
 {
-	//uint16_t dummy = reg | 0x80;
+	uint16_t dummy = reg | 0x80;
+	enum status_code ret_val = STATUS_OK;
 	spi_select_slave(&spi_master_instance,&nrf24l01_slave_instance,true);
-	spi_write_buffer_wait(&spi_master_instance,&reg,1);
-	spi_read_buffer_wait(&spi_master_instance,data,length,reg);
+	ret_val = spi_write_buffer_wait(&spi_master_instance,&reg,1);
+	ret_val = spi_read_buffer_wait(&spi_master_instance,data,length,dummy);
 	//spi_transceive_wait(&spi_master_instance,reg,data);
 	spi_select_slave(&spi_master_instance,&nrf24l01_slave_instance,false);
+}
+
+void nrf24l01_status(void)
+{
+	char buf[32];
+	uint8_t retval = 0;
+	nrf24l01_spi_read(&retval,1,NRF_CONFIG_REG);
+	sprintf(buf,"NRF_CONFIG_REG:\t\t%02x\r\n",retval);
+	uart_write(buf);
+	
+	nrf24l01_spi_read(&retval,1,NRF_EN_AA_REG);
+	sprintf(buf,"NRF_EN_AA_REG:\t\t%02x\r\n",retval);
+	uart_write(buf);
+	
+	nrf24l01_spi_read(&retval,1,NRF_EN_RXADDR_REG);
+	sprintf(buf,"NRF_EN_RXADDR_REG:\t%02x\r\n",retval);
+	uart_write(buf);
+	
+	nrf24l01_spi_read(&retval,1,NRF_SETUP_AW_REG);
+	sprintf(buf,"NRF_SETUP_AW_REG:\t%02x\r\n",retval);
+	uart_write(buf);
+	
+	nrf24l01_spi_read(&retval,1,NRF_SETUP_RETR_REG);
+	sprintf(buf,"NRF_SETUP_RETR_REG:\t%02x\r\n",retval);
+	uart_write(buf);
+	
+	nrf24l01_spi_read(&retval,1,NRF_RF_CH_REG);
+	sprintf(buf,"NRF_RF_CH_REG:\t\t%02x\r\n",retval);
+	uart_write(buf);
+	
+	nrf24l01_spi_read(&retval,1,NRF_RF_SETUP_REG);
+	sprintf(buf,"NRF_RF_SETUP_REG:\t%02x\r\n",retval);
+	uart_write(buf);
+	
+	nrf24l01_spi_read(&retval,1,NRF_STATUS_REG);
+	sprintf(buf,"NRF_STATUS_REG:\t\t%02x\r\n",retval);
+	uart_write(buf);
+	
+	nrf24l01_spi_read(&retval,1,NRF_FEATURE_REG);
+	sprintf(buf,"NRF_FEATURE_REG:\t%02x\r\n",retval);
+	uart_write(buf);
+	
+	nrf24l01_spi_read(&retval,1,NRF_DYNPD_REG);
+	sprintf(buf,"NRF_DYNPD_REG:\t\t%02x\r\n",retval);
+	uart_write(buf);
 }
 
 void nrf24l01_init(void)
 {
 
+	struct port_config config_port_pin;
+	port_get_config_defaults(&config_port_pin);
+	config_port_pin.direction = PORT_PIN_DIR_OUTPUT;
+	//config_port_pin.input_pull = PORT_PIN_PULL_DOWN;
+	port_pin_set_config(NRF24L01_CE,&config_port_pin);
+	port_pin_set_config(NRF_VCC_EN, &config_port_pin);
+	port_pin_set_output_level(NRF_VCC_EN,true);
+	port_pin_set_output_level(NRF24L01_CE,false);
+	config_port_pin.direction = PORT_PIN_DIR_INPUT;
+	config_port_pin.input_pull = PORT_PIN_PULL_NONE;
+	port_pin_set_config(NRF24L01_IRQ,&config_port_pin);
+	
+
+	delay_ms(10);
 	char config = 0;
-	char adr[5] = {0x2A,0x2A,0x2A,0x2A,0};//{0x42,0x42,0x42,0x42,0x00};
+	char adr[5] = {0xc2,0xc2,0xc2,0xc2,0xc2};//{0x2A,0x2A,0x2A,0x2A,0x0};//{0x42,0x42,0x42,0x42,0x00};
+	char TX_ADDR[5] = {0xe7,0xe7,0xe7,0xe7,0xe7};//{0xc2,0xc2,0xc2,0xc2,0xc2};
+	char RX_ADDR[5] = {0xc2,0xc2,0xc2,0xc2,0xc2};//;
+		
 	
 	
 	char hello_world[] = "Hello World! Prinsesse";
 	
 	
-	config = NRF_CONFIG_PWR_UP;
+	config = 0x0E;//NRF_CONFIG_PWR_UP | NRF_CONFIG_EN_CRC;
 	nrf24l01_cmd(NRF_W_REGISTER(NRF_CONFIG_REG),config);
-	config = NRF_EN_AA_ENAA_P0;
+	
+	config = 0x60;//0x4D;
+	nrf24l01_cmd(NRF_W_REGISTER(NRF_RF_CH_REG),config);
+	
+	config = 0x3f;//NRF_EN_AA_ENAA_P1;
 	nrf24l01_cmd(NRF_W_REGISTER(NRF_EN_AA_REG),config);
 	config = NRF_SETUP_AW_4BYTES;
 	nrf24l01_cmd(NRF_W_REGISTER(NRF_SETUP_AW_REG),config);
-	config = NRF_FEATURE_EN_DPL;
+	config = 0x06;//NRF_FEATURE_EN_DPL;
 	nrf24l01_cmd(NRF_W_REGISTER(NRF_FEATURE_REG),config);
-	config = (1<<0);
+	config = 0x3f;//(1<<0);
 	nrf24l01_cmd(NRF_W_REGISTER(NRF_DYNPD_REG),config);
-	config = NRF_SETUP_RETR_ARC_RT15 | NRF_SETUP_RETR_ARD_W4000;
+	config = NRF_SETUP_RETR_ARC_RT1 | NRF_SETUP_RETR_ARD_W250;
 	nrf24l01_cmd(NRF_W_REGISTER(NRF_SETUP_RETR_REG),config);
-	nrf24l01_cmd2(NRF_W_REGISTER(NRF_TX_ADDR_REG),5,adr);
-	nrf24l01_cmd2(NRF_W_REGISTER(NRF_RX_ADDR_P0_REG),5,adr);
-	nrf24l01_cmd2(NRF_W_TX_PAYLOAD,strlen(hello_world),hello_world);
+	
+	
+	config = NRF_RF_SETUP_RF_PWR_18DBM | NRF_RF_SETUP_DR_2MBPS;
+	nrf24l01_cmd(NRF_W_REGISTER(NRF_RF_SETUP_REG),config);
+	
+	
+	//nrf24l01_cmd2(NRF_W_REGISTER(NRF_TX_ADDR_REG),5,TX_ADDR);
+	//nrf24l01_cmd2(NRF_W_REGISTER(NRF_RX_ADDR_P0_REG),5,RX_ADDR);
+	//nrf24l01_cmd2(NRF_W_TX_PAYLOAD,strlen(hello_world),hello_world);
 }
 
 
@@ -309,4 +382,14 @@ uint32_t NRF_TX_data(uint8_t *data, uint32_t length)
 		
 	}
 	return NRF_FAILURE;
+}
+
+nrf_enable_vcc(void)
+{
+	port_pin_set_output_level(NRF_VCC_EN,true);
+}
+
+nrf_disable_vcc(void)
+{
+	port_pin_set_output_level(NRF_VCC_EN,false);
 }
